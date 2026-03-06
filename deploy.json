@@ -1,0 +1,23 @@
+{
+  "slug": "emaresuperapp",
+  "name": "Emare SuperApp",
+  "github_repo": "emraresoftware/emaresuperapp",
+  "branch": "main",
+  "dc": "local",
+  "server_host": null,
+  "server_ssh_port": 22,
+  "remote_path": "/opt/emaresuperapp",
+  "stack": "node-nextjs",
+  "port": 8316,
+  "domain": "",
+  "deploy_commands": [
+    "cd /opt/emaresuperapp",
+    "git pull origin main",
+    "npm ci --silent",
+    "npm run build",
+    "pm2 restart emaresuperapp || pm2 start ecosystem.config.js"
+  ],
+  "restart_command": "pm2 status emaresuperapp",
+  "auto_deploy_on_push": false,
+  "health_check_url": null
+}
