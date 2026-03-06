@@ -80,6 +80,18 @@
 			"type": "shell",
 			"command": "git add -A && git commit -m 'chore: start.sh guncellendi, .env.development eklendi'",
 			"group": "build"
+		},
+		{
+			"label": "run-tests",
+			"type": "shell",
+			"command": "cd /Users/emre/Desktop/Emare/emaresuperapp && .venv/bin/python -m pytest tests/ -q 2>&1 | tail -4",
+			"group": "test"
+		},
+		{
+			"label": "commit-cloud",
+			"type": "shell",
+			"command": "git add -A && git commit -m 'fix: EmareCloud port/domain bilgileri guncellendi (5555 local, emarecloud.tr, health_path)'",
+			"group": "build"
 		}
 	]
 }

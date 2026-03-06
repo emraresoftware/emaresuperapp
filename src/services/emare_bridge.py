@@ -42,7 +42,10 @@ def _registry() -> dict[str, dict[str, Any]]:
             "id": "cloud", "name": "EmareCloud", "icon": "☁️",
             "url": s.emare_cloud_url, "status": "production",
             "category": "Infrastructure", "local_port": 5555,
-            "description": "Sunucu yönetim paneli — SSH, LXD, firewall",
+            "domain": "emarecloud.tr",
+            "health_path": "/health",
+            "tech": "Flask + SocketIO + Gunicorn + Nginx",
+            "description": "Multi-tenant altyapı yönetim paneli — SSH, LXD, firewall, marketplace, Cloudflare",
         },
         "finance": {
             "id": "finance", "name": "Emare Finance", "icon": "💰",
@@ -270,7 +273,8 @@ async def check_service_health(service_id: str) -> dict[str, Any]:
         return {"id": service_id, "name": svc["name"], "status": "no_url", "reachable": False}
 
     try:
-        result = await _request("GET", svc["url"], "/health", timeout=5.0)
+        health_path = svc.get("health_path", "/health")
+        result = await _request("GET", svc["url"], health_path, timeout=5.0)
         return {
             "id": service_id, "name": svc["name"], "icon": svc["icon"],
             "status": "healthy", "reachable": True, "details": result,
