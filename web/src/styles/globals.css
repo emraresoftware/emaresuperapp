@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --emare-primary: #6366f1;
+  --emare-secondary: #8b5cf6;
+  --emare-dark: #0f172a;
+}
+
+body {
+  @apply bg-slate-950 text-white;
+}

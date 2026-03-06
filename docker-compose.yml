@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  # ── SuperApp Backend ──
+  superapp:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file: .env
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+      - WORKERS=${WORKERS:-4}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── PostgreSQL ──
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-emaresuperapp}
+      POSTGRES_USER: ${POSTGRES_USER:-emare}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD zorunlu}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-emare}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ──
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+
+  # ── Web Frontend (dev) ──
+  web:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web:/app
+    depends_on:
+      - superapp
+
+volumes:
+  pgdata:
+  redisdata:
