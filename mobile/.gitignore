@@ -1,0 +1,31 @@
+node_modules/
+.expo/
+dist/
+build/
+*.jks
+*.keystore
+*.p12
+*.p8
+*.mobileprovision
+
+# Google Services (gizli!)
+google-services.json
+google-play-service-account.json
+GoogleService-Info.plist
+
+# Env
+.env
+.env.local
+.env.production
+
+# iOS
+ios/Pods/
+ios/*.xcworkspace/xcuserdata/
+
+# Android
+android/build/
+android/.gradle/
+android/app/build/
+
+# Expo
+.expo-shared/

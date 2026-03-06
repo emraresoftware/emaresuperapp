@@ -3,6 +3,9 @@
     "name": "Emare SuperApp",
     "slug": "emaresuperapp",
     "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -14,7 +17,14 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.emare.superapp"
+      "bundleIdentifier": "com.emare.superapp",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Profil fotoğrafı için kamera erişimi",
+        "NSPhotoLibraryUsageDescription": "Profil fotoğrafı seçmek için galeri erişimi",
+        "NSUserNotificationsUsageDescription": "Bildirimler için izin gereklidir",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -22,16 +32,58 @@
         "backgroundColor": "#0f172a"
       },
       "package": "com.emare.superapp",
-      "permissions": ["NOTIFICATIONS", "CAMERA", "READ_EXTERNAL_STORAGE"]
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE"
+      ],
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#6366f1",
+          "sounds": ["./assets/notification.wav"]
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "15.1"
+          },
+          "android": {
+            "minSdkVersion": 24,
+            "targetSdkVersion": 34,
+            "compileSdkVersion": 34
+          }
+        }
+      ]
+    ],
     "scheme": "emaresuperapp",
+    "updates": {
+      "url": "https://u.expo.dev/emaresuperapp",
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
+    },
     "extra": {
-      "apiUrl": "http://localhost:8080"
-    }
+      "apiUrl": "https://api.emare.app",
+      "eas": {
+        "projectId": "emaresuperapp-project-id"
+      }
+    },
+    "owner": "emraresoftware"
   }
 }

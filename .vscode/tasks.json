@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "git-commit-store",
+			"type": "shell",
+			"command": "git add -A && git commit -m 'feat: App Store ve Google Play hazırlığı' && git push origin main && echo 'DONE'",
+			"group": "build"
+		}
+	]
+}

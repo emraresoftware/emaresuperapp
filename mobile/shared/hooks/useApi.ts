@@ -3,9 +3,13 @@
  * React Native / Expo ortamı
  */
 import { useState, useEffect, useCallback } from "react";
+import Constants from "expo-constants";
 
-export const API_BASE =
-  process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8000";
+// Expo Constants'tan al (app.json extra.apiUrl veya env değişkeni)
+export const API_BASE: string =
+  (process.env.EXPO_PUBLIC_API_URL as string) ??
+  (Constants.expoConfig?.extra?.apiUrl as string) ??
+  "http://localhost:8000";
 
 // ── Temel fetch ───────────────────────────────────────────────────────────
 
