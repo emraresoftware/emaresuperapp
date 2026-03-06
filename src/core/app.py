@@ -78,16 +78,32 @@ def create_app() -> FastAPI:
     # ── Root endpoint ──
     @app.get("/")
     async def root():
+        from services.emare_bridge import get_service_registry
+        reg = get_service_registry()
+        by_status: dict = {}
+        for svc in reg.values():
+            st = svc.get("status", "unknown")
+            by_status.setdefault(st, []).append(svc["id"])
         return {
             "app": "Emare SuperApp",
             "version": "0.1.0",
             "status": "running",
             "docs": None if settings.is_production else "/docs",
-            "modules": [
-                "auth", "wallet", "marketplace",
-                "social", "ai_assistant",
-                "notifications", "analytics",
+            "ecosystem": {
+                "total_services": len(reg),
+                "production": len(by_status.get("production", [])),
+                "ready": len(by_status.get("ready", [])),
+                "development": len(by_status.get("development", [])),
+                "planning": len(by_status.get("planning", [])),
+            },
+            "api_modules": [
+                "auth", "users", "wallet", "notifications", "analytics",
             ],
+            "gateway": {
+                "services_list": f"{settings.api_prefix}/services",
+                "health_all": f"{settings.api_prefix}/services/health/all",
+                "proxy": f"{settings.api_prefix}/services/gateway/{{service_id}}/{{path}}",
+            },
         }
 
     @app.get("/health")

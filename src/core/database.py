@@ -52,6 +52,8 @@ async def init_db():
 
 async def get_db() -> AsyncSession:
     """Dependency injection için DB session üreteci."""
+    if async_session_factory is None:
+        raise RuntimeError("Veritabanı henüz başlatılmadı — init_db() çağrılmamış")
     async with async_session_factory() as session:
         try:
             yield session

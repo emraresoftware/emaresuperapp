@@ -3,7 +3,7 @@ Emare SuperApp — Auth API Endpoints
 """
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, Annotated
 
@@ -18,7 +18,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", auto_error=F
 
 # ── Schemas ──
 class RegisterRequest(BaseModel):
-    email: EmailStr
+    email: str = Field(..., pattern=r"^[^@]+@[^@]+\.[^@]+$")
     username: str = Field(..., min_length=3, max_length=50)
     password: str = Field(..., min_length=8)
     full_name: Optional[str] = None

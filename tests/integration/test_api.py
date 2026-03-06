@@ -160,3 +160,82 @@ async def test_openapi_schema(client):
     # Temel path'ler tanımlı mı?
     assert "/api/v1/auth/register" in schema["paths"]
     assert "/api/v1/auth/login" in schema["paths"]
+
+
+# ---------------------------------------------------------------------------
+# Servis Gateway testleri
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_root_ecosystem_counts(client):
+    """Kök endpoint ekosistem istatistiklerini içeriyor mu?"""
+    resp = await client.get("/")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "ecosystem" in data
+    eco = data["ecosystem"]
+    assert eco["total_services"] >= 20
+    assert eco["production"] >= 7
+    assert "gateway" in data
+
+
+@pytest.mark.asyncio
+async def test_services_list(client):
+    """Servis listesi asistan/cloud/finance içeriyor mu?"""
+    resp = await client.get("/api/v1/services")
+    assert resp.status_code == 200
+    services = resp.json()
+    ids = {s["id"] for s in services}
+    assert "asistan" in ids
+    assert "cloud" in ids
+    assert "finance" in ids
+    assert "flow" in ids
+
+
+@pytest.mark.asyncio
+async def test_services_filter_by_status(client):
+    """Status filtresi çalışıyor mu?"""
+    resp = await client.get("/api/v1/services?status=production")
+    assert resp.status_code == 200
+    services = resp.json()
+    assert len(services) >= 7
+    for s in services:
+        assert s["status"] == "production"
+
+
+@pytest.mark.asyncio
+async def test_service_detail(client):
+    """Tek servis detayı doğru alanları döndürüyor mu?"""
+    resp = await client.get("/api/v1/services/asistan")
+    assert resp.status_code == 200
+    svc = resp.json()
+    assert svc["id"] == "asistan"
+    assert "url" in svc
+    assert "status" in svc
+    assert svc["status"] == "production"
+
+
+@pytest.mark.asyncio
+async def test_service_not_found(client):
+    """Bilinmeyen servis 404 döndürüyor mu?"""
+    resp = await client.get("/api/v1/services/bilinmeyen_servis_xyz")
+    assert resp.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_service_health_single(client):
+    """Sağlık kontrolü beklenen yapıyı döndürüyor mu?"""
+    resp = await client.get("/api/v1/services/asistan/health")
+    assert resp.status_code == 200
+    h = resp.json()
+    assert h["id"] == "asistan"
+    assert "reachable" in h
+    assert "status" in h
+
+
+@pytest.mark.asyncio
+async def test_gateway_unknown_service(client):
+    """Bilinmeyen servise proxy 404 döndürüyor mu?"""
+    resp = await client.get("/api/v1/services/gateway/bilinmeyen_servis_xyz/test")
+    assert resp.status_code == 404
