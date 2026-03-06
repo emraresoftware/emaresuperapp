@@ -6,6 +6,80 @@
 			"type": "shell",
 			"command": "git add -A && git commit -m 'feat: App Store ve Google Play hazırlığı' && git push origin main && echo 'DONE'",
 			"group": "build"
+		},
+		{
+			"label": "superapp-backend",
+			"type": "shell",
+			"command": "cd /Users/emre/Desktop/Emare/emaresuperapp && .venv/bin/python -m uvicorn src.core.app:create_app --factory --reload --port 8000 --host 0.0.0.0",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "superapp-start",
+			"type": "shell",
+			"command": "lsof -ti:8000 | xargs kill -9 2>/dev/null; sleep 1; cd /Users/emre/Desktop/Emare/emaresuperapp && .venv/bin/python -m uvicorn src.core.app:create_app --factory --reload --port 8000 --host 0.0.0.0",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "superapp-test",
+			"type": "shell",
+			"command": "curl -s http://localhost:8000/ | python3 -m json.tool && echo '---' && curl -s http://localhost:8000/health && echo '---SERVICES---' && curl -s 'http://localhost:8000/api/v1/services?status=production' | python3 -m json.tool | head -40",
+			"group": "test"
+		},
+		{
+			"label": "superapp-check",
+			"type": "shell",
+			"command": "sleep 2 && curl -s http://localhost:8000/ | python3 -m json.tool",
+			"group": "test"
+		},
+		{
+			"label": "health-check",
+			"type": "shell",
+			"command": "/usr/bin/curl -s http://localhost:8000/health",
+			"group": "test"
+		},
+		{
+			"label": "superapp-run",
+			"type": "shell",
+			"command": "lsof -ti:8000 | xargs kill -9 2>/dev/null; sleep 1; PYTHONPATH=/Users/emre/Desktop/Emare/emaresuperapp/src /Users/emre/Desktop/Emare/emaresuperapp/.venv/bin/uvicorn src.core.app:create_app --factory --reload --port 8000 --host 0.0.0.0",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "superapp-dev",
+			"type": "shell",
+			"command": "lsof -ti:8000 | xargs kill -9 2>/dev/null; sleep 1; export PYTHONPATH=/Users/emre/Desktop/Emare/emaresuperapp/src && export DATABASE_URL='sqlite+aiosqlite:///./emare_dev.db' && export APP_ENV=development && /Users/emre/Desktop/Emare/emaresuperapp/.venv/bin/uvicorn src.core.app:create_app --factory --reload --port 8000 --host 0.0.0.0",
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "api-test",
+			"type": "shell",
+			"command": "echo '=== / (root) ===' && /usr/bin/curl -s http://localhost:8000/ | /usr/bin/python3 -m json.tool && echo '\\n=== /health ===' && /usr/bin/curl -s http://localhost:8000/health && echo '\\n=== services (production) ===' && /usr/bin/curl -s 'http://localhost:8000/api/v1/services?status=production' | /usr/bin/python3 -m json.tool | head -50",
+			"group": "test"
+		},
+		{
+			"label": "root-test",
+			"type": "shell",
+			"command": "/usr/bin/curl -s http://localhost:8000/ | /usr/bin/python3 -m json.tool",
+			"group": "test"
+		},
+		{
+			"label": "full-test",
+			"type": "shell",
+			"command": "echo '== ROOT ==' && /usr/bin/curl -fs http://localhost:8000/ | /usr/bin/python3 -m json.tool 2>&1 | head -25 && echo '== HEALTH ==' && /usr/bin/curl -fs http://localhost:8000/health 2>&1 && echo '== SERVISLER (prod) ==' && /usr/bin/curl -fs 'http://localhost:8000/api/v1/services?status=production' 2>&1 | /usr/bin/python3 -m json.tool | grep -E 'id|name|status' | head -30",
+			"group": "test"
+		},
+		{
+			"label": "commit-start",
+			"type": "shell",
+			"command": "git add -A && git commit -m 'chore: start.sh guncellendi, .env.development eklendi'",
+			"group": "build"
 		}
 	]
 }
