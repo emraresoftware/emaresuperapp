@@ -10,3 +10,4 @@ dist/
 build/
 .pytest_cache/
 .coverage
+emare_dev.db

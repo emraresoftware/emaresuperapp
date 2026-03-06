@@ -124,12 +124,6 @@ async def health_single(service_id: str):
     return result
 
 
-@router.api_route(
-    "/gateway/{service_id}/{path:path}",
-    methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
-    summary="Şeffaf proxy gateway",
-    include_in_schema=True,
-)
 async def gateway_proxy(service_id: str, path: str, request: Request):
     """
     İsteği ilgili Emare servisine şeffaf olarak iletir.
@@ -177,3 +171,20 @@ async def gateway_proxy(service_id: str, path: str, request: Request):
             status_code=502,
             detail=f"{service_id} servisinden yanıt alınamadı: {exc}",
         )
+
+
+# Her HTTP metodu için ayrı operation_id — duplicate uyarısını önler
+for _method in ("GET", "POST", "PUT", "PATCH", "DELETE"):
+    router.add_api_route(
+        "/gateway/{service_id}/{path:path}",
+        gateway_proxy,
+        methods=[_method],
+        operation_id=f"gateway_proxy_{_method.lower()}",
+        summary=f"Şeffaf proxy gateway [{_method}]",
+        description=(
+            "İsteği ilgili Emare servisine şeffaf olarak iletir.\n\n"
+            "Örnek: `GET /api/v1/services/gateway/asistan/api/stats`\n"
+            "→ `GET http://77.92.152.3:8000/api/stats` adresine iletilir."
+        ),
+        include_in_schema=True,
+    )
