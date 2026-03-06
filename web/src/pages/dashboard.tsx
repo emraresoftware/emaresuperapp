@@ -8,6 +8,7 @@ const MODULES = [
   { icon: '🤖', name: 'AI Asistan', desc: 'Hazır', href: '/ai', color: 'from-emerald-500/10' },
   { icon: '🔔', name: 'Bildirimler', desc: '0 yeni', href: '/notifications', color: 'from-amber-500/10' },
   { icon: '📊', name: 'Analitik', desc: 'Son 7 gün', href: '/analytics', color: 'from-pink-500/10' },
+  { icon: '🌐', name: 'Ekosistem', desc: '47 servis', href: '/services', color: 'from-cyan-500/10' },
 ]
 
 export default function Dashboard() {
